@@ -1,0 +1,110 @@
+<%- include('partials/header') %>
+
+<section class="hero-section">
+    <div class="container">
+        <h1 class="hero-title">Your Health, Our Priority</h1>
+        <p class="hero-subtitle">Advanced diagnostic services with care and precision</p>
+        <div class="d-flex justify-content-center flex-wrap">
+            <a href="/services" class="btn btn-light btn-lg me-3">Book a Test</a>
+            <a href="/contact" class="btn btn-outline-light btn-lg">Contact Us</a>
+        </div>
+    </div>
+</section>
+
+<div class="container my-5">
+    <h2 class="text-center mb-5">Our Services</h2>
+    <div class="row text-center">
+        <div class="col-md-4 mb-4 fade-in">
+            <div class="card h-100">
+                <div class="card-body">
+                    <i class="bi bi-thermometer fs-1 text-primary mb-3"></i>
+                    <h5>Diagnostic Testing</h5>
+                    <p>We offer a wide range of diagnostic tests, ensuring accurate results for all medical needs.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4 fade-in">
+            <div class="card h-100">
+                <div class="card-body">
+                    <i class="bi bi-person-lines-fill fs-1 text-primary mb-3"></i>
+                    <h5>Health Screenings</h5>
+                    <p>Comprehensive health screenings to monitor your well-being and prevent potential issues.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4 fade-in">
+            <div class="card h-100">
+                <div class="card-body">
+                    <i class="bi bi-heart-pulse fs-1 text-primary mb-3"></i>
+                    <h5>Specialized Testing</h5>
+                    <p>We provide specialized diagnostic tests tailored to meet your unique healthcare needs.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <h2 class="text-center mb-5">What Our Patients Say</h2>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="testimonial-card">
+                <div class="rating mb-2">
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                </div>
+                <p>"The service was excellent. I got my test results quickly and the staff was very professional."</p>
+                <div class="name">- Rajesh Kumar</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="testimonial-card">
+                <div class="rating mb-2">
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-half text-warning"></i>
+                </div>
+                <p>"Very clean facility and efficient service. The online booking system made everything convenient."</p>
+                <div class="name">- Priya Sharma</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="testimonial-card">
+                <div class="rating mb-2">
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star text-warning"></i>
+                </div>
+                <p>"Accurate results and friendly staff. Would definitely recommend to friends and family."</p>
+                <div class="name">- Arun Patel</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const fadeElements = document.querySelectorAll('.fade-in');
+        
+        const fadeInObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = 1;
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        fadeElements.forEach(element => {
+            fadeInObserver.observe(element);
+        });
+    });
+</script>
+
+<%- include('partials/footer') %>

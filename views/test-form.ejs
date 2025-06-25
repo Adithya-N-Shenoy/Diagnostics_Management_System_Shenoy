@@ -1,0 +1,100 @@
+<%- include('partials/header') %>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3><%= test ? 'Edit Test' : 'Add New Test' %></h3>
+                </div>
+                <div class="card-body">
+                    <% if (typeof error !== 'undefined') { %>
+                        <div class="alert alert-danger"><%= error %></div>
+                    <% } %>
+                    
+                    <form method="POST" action="<%= test ? `/tests/${test.id}?_method=PUT` : '/tests' %>">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Test Name*</label>
+                            <input type="text" class="form-control" id="name" name="name" 
+                                   value="<%= test ? test.name : '' %>" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" 
+                                      rows="3"><%= test ? test.description : '' %></textarea>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="price" class="form-label">Price*</label>
+                                <input type="number" class="form-control" id="price" name="price" 
+                                       value="<%= test ? test.price : '' %>" min="0" step="0.01" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="duration" class="form-label">Duration*</label>
+                                <input type="text" class="form-control" id="duration" name="duration" 
+                                       value="<%= test ? test.duration : '' %>" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="preparation" class="form-label">Preparation Instructions</label>
+                            <input type="text" class="form-control" id="preparation" name="preparation" 
+                                   value="<%= test ? test.preparation : '' %>">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="doctor_id" class="form-label">Assigned Doctor*</label>
+                            <select class="form-select" id="doctor_id" name="doctor_id" required>
+                                <option value="">Select Doctor</option>
+                                <% doctors.forEach(doctor => { %>
+                                    <option value="<%= doctor.id %>" <%= test && test.doctor_id === doctor.id ? 'selected' : '' %>>
+                                        <%= doctor.name %> (<%= doctor.specialization %>)
+                                    </option>
+                                <% }); %>
+                            </select>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <%= test ? 'Update Test' : 'Add Test' %>
+                            </button>
+                            <a href="/services" class="btn btn-outline-secondary">Cancel</a>
+                            <% if (test) { %>
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" 
+                                        data-bs-target="#deleteModal">
+                                    Delete Test
+                                </button>
+                            <% } %>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<% if (test) { %>
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete "<%= test.name %>"? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="POST" action="/tests/<%= test.id %>/delete">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<% } %>
+
+<%- include('partials/footer') %>

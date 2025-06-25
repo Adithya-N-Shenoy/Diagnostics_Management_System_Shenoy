@@ -1,0 +1,86 @@
+<%- include('partials/header') %>
+
+<div class="container mt-4">
+    <h1>My Bookings</h1>
+
+    <% if (typeof success !== 'undefined' && success) { %>
+        <div class="alert alert-success"><%= success %></div>
+    <% } %>
+    <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert alert-danger"><%= error %></div>
+    <% } %>
+
+    <div class="table-responsive mt-4">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <% if (isAdmin) { %>
+                        <th>User</th>
+                    <% } %>
+                    <th>Test</th>
+                    <th>Patient</th>
+                    <th>Age/Gender</th>
+                    <th>Date & Time</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% bookings.forEach(booking => { %>
+                    <tr>
+                        <% if (isAdmin) { %>
+                            <td><%= booking.user_name %></td>
+                        <% } %>
+                        <td><%= booking.test_name %></td>
+                        <td><%= booking.patient_name %></td>
+                        <td><%= booking.age %>/<%= booking.gender %></td>
+                        <td><%= new Date(booking.booking_date).toLocaleString() %></td>
+                        <td>
+                            <span class="badge bg-<%= 
+                                booking.status === 'Completed' ? 'success' : 
+                                booking.status === 'Cancelled' ? 'danger' : 'warning' 
+                            %>">
+                                <%= booking.status %>
+                            </span>
+                        </td>
+                        <td>
+                            <!-- ✅ View Booking -->
+                            <a href="/bookings/<%= booking.id %>" class="btn btn-info btn-sm mb-1">View</a>
+
+                            <!-- ✅ View Results if Completed -->
+                            <% if (booking.status === 'Completed') { %>
+                                <a href="/bookings/<%= booking.id %>/results/view" class="btn btn-success btn-sm mb-1">Results</a>
+                            <% } %>
+
+                            <!-- ✅ Upload Results if Admin and not completed -->
+                            <% if (isAdmin && booking.status !== 'Completed') { %>
+                                <a href="/bookings/<%= booking.id %>/results" class="btn btn-warning btn-sm mb-1">Upload Results</a>
+                            <% } %>
+
+                            <!-- ✅ Edit Booking -->
+                            <a href="/bookings/<%= booking.id %>/edit" class="btn btn-sm btn-primary mb-1">Edit</a>
+
+                            <!-- ✅ Change Status (for Admins) -->
+                            <% if (isAdmin) { %>
+                                <form method="POST" action="/bookings/<%= booking.id %>/status" class="d-inline">
+                                    <select name="status" class="form-select form-select-sm d-inline w-auto" onchange="this.form.submit()">
+                                        <option value="Pending" <%= booking.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+                                        <option value="Completed" <%= booking.status === 'Completed' ? 'selected' : '' %>>Completed</option>
+                                        <option value="Cancelled" <%= booking.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+                                    </select>
+                                </form>
+                            <% } %>
+
+                            <!-- ✅ Delete Booking -->
+                            <form method="POST" action="/bookings/<%= booking.id %>/delete" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-danger mb-1">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

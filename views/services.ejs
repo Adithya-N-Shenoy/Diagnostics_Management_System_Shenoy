@@ -1,0 +1,243 @@
+<%- include('partials/header') %>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="text-primary">Our Diagnostic Services</h1>
+            <p class="lead">Select a test below to book an appointment</p>
+        </div>
+        <% if (loggedin && email === 'admin@example.com') { %>
+            <a href="/tests/new" class="btn btn-primary">Add New Test</a>
+        <% } %>
+    </div>
+    
+    <% if (typeof success !== 'undefined' && success) { %>
+        <div class="alert alert-success"><%= success %></div>
+    <% } %>
+    <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert alert-danger"><%= error %></div>
+    <% } %>
+    
+    <div class="row mt-4">
+        <% tests.forEach(test => { %>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-primary"><%= test.name %></h5>
+                    <p class="card-text"><%= test.description %></p>
+                    <ul class="list-group list-group-flush mb-3">
+                        <li class="list-group-item"><strong>Price:</strong> ₹<%= test.price %></li>
+                        <li class="list-group-item"><strong>Duration:</strong> <%= test.duration %></li>
+                        <li class="list-group-item"><strong>Preparation:</strong> <%= test.preparation %></li>
+                        <% if (test.doctor_name) { %>
+                            <li class="list-group-item"><strong>Doctor:</strong> <%= test.doctor_name %></li>
+                        <% } %>
+                    </ul>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <button class="btn btn-primary book-test" data-test-id="<%= test.id %>" data-test-name="<%= test.name %>">
+                        Book This Test
+                    </button>
+                    <% if (loggedin && email === 'admin@example.com') { %>
+                        <a href="/tests/<%= test.id %>/edit" class="btn btn-sm btn-outline-secondary">Edit</a>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+        <% }); %>
+    </div>
+    
+    <!-- Modal for booking form -->
+    <div class="modal fade" id="bookingModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Book Test: <span id="modalTestName"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="bookingForm">
+                        <input type="hidden" id="testId" name="test_id">
+                        <input type="hidden" id="testName" name="test_name">
+                        
+                        <div class="mb-3">
+                            <label for="patientName" class="form-label">Patient Name</label>
+                            <input type="text" class="form-control" id="patientName" name="patient_name" required>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="age" class="form-label">Age</label>
+                                <input type="number" class="form-control" id="age" name="age" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="gender" class="form-label">Gender</label>
+                                <select class="form-select" id="gender" name="gender" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Address for Sample Collection</label>
+                            <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="bookingDate" class="form-label">Preferred Date & Time</label>
+                            <input type="datetime-local" class="form-control" id="bookingDate" name="booking_date" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="additionalNotes" class="form-label">Additional Notes</label>
+                            <textarea class="form-control" id="additionalNotes" name="additional_notes" rows="3"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100">Submit Booking</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f8f9fa;
+    }
+    
+    .navbar {
+        background: #007bff;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .navbar-brand {
+        font-size: 2.5em;
+        font-weight: bold;
+        color: white !important;
+    }
+    
+    .navbar-nav .nav-link {
+        color: white !important;
+        font-size: 1.2em;
+        padding: 0.5rem 1rem;
+        transition: color 0.3s ease, transform 0.3s ease;
+    }
+    
+    .navbar-nav .nav-link:hover {
+        color: gold !important;
+        transform: translateY(-3px);
+    }
+    
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: none;
+        border-radius: 10px;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .card-title {
+        color: #007bff;
+        font-weight: bold;
+    }
+    
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+        background-color: #0069d9;
+        transform: scale(1.05);
+    }
+    
+    .modal-header {
+        background: linear-gradient(135deg, #2f02e7, #ee044e);
+    }
+    
+    .list-group-item {
+        border-left: none;
+        border-right: none;
+    }
+    
+    @media (max-width: 991px) {
+        .navbar-nav .nav-link {
+            font-size: 1em;
+            padding: 0.5rem;
+        }
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const bookTestButtons = document.querySelectorAll('.book-test');
+    const bookingModal = new bootstrap.Modal(document.getElementById('bookingModal'));
+    const modalTestName = document.getElementById('modalTestName');
+    const testIdInput = document.getElementById('testId');
+    const testNameInput = document.getElementById('testName');
+    const bookingForm = document.getElementById('bookingForm');
+    
+    bookTestButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const testId = this.getAttribute('data-test-id');
+            const testName = this.getAttribute('data-test-name');
+            
+            modalTestName.textContent = testName;
+            testIdInput.value = testId;
+            testNameInput.value = testName;
+            
+            // Pre-fill email if available
+            const userEmail = '<%= typeof email !== "undefined" ? email : "" %>';
+            if (userEmail) {
+                document.getElementById('email').value = userEmail;
+            }
+            
+            bookingModal.show();
+        });
+    });
+    
+    bookingForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        const data = {};
+        formData.forEach((value, key) => data[key] = value);
+        
+        fetch('/submit-booking', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+});
+</script>
+
+<%- include('partials/footer') %>

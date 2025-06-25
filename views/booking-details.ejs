@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Booking Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <h2>Booking Details</h2>
+        
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"><%= booking.test_name %></h5>
+                <p class="card-text"><%= booking.description %></p>
+                
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <strong>Booking ID:</strong> <%= booking.id %>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Patient:</strong> <%= booking.patient_name %> (<%= booking.age %> years)
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Gender:</strong> <%= booking.gender %>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Date:</strong> <%= new Date(booking.booking_date).toLocaleString() %>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Status:</strong> 
+                        <span class="badge bg-<%= booking.status === 'Completed' ? 'success' : 'warning' %>">
+                            <%= booking.status %>
+                        </span>
+                    </li>
+                    <% if (booking.additional_notes) { %>
+                    <li class="list-group-item">
+                        <strong>Notes:</strong> <%= booking.additional_notes %>
+                    </li>
+                    <% } %>
+                    <% if (booking.report_path) { %>
+                    <li class="list-group-item">
+                        <strong>Report:</strong> 
+                        <a href="/bookings/<%= booking.id %>/report/download" class="btn btn-sm btn-success">Download PDF</a>
+                    </li>
+                    <% } %>
+                </ul>
+                
+                <div class="mt-3">
+                    <a href="/bookings" class="btn btn-secondary">Back to Bookings</a>
+                    <% if (isAdmin) { %>
+                        <a href="/bookings/<%= booking.id %>/edit" class="btn btn-primary">Edit</a>
+                        <% if (!booking.report_path) { %>
+                            <a href="/bookings/<%= booking.id %>/report" class="btn btn-warning">Upload Report</a>
+                        <% } %>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

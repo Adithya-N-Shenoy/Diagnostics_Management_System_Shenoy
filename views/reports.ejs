@@ -1,0 +1,34 @@
+<%- include('partials/header') %>
+<div class="container mt-4">
+  <h2>My Test Reports</h2>
+  <% if (reports.length === 0) { %>
+    <div class="alert alert-info">No reports found.</div>
+  <% } else { %>
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Test Name</th>
+            <th>Patient</th>
+            <th>Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% reports.forEach(report => { %>
+            <tr>
+              <td><%= report.test_name %></td>
+              <td><%= report.patient_name %></td>
+              <td><%= new Date(report.created_at).toLocaleString() %></td>
+              <td>
+                <a href="/view-report/<%= report.id %>" class="btn btn-sm btn-primary">View</a>
+                <a href="/download-report/<%= report.id %>" class="btn btn-sm btn-success">Download</a>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>
+<%- include('partials/footer') %>

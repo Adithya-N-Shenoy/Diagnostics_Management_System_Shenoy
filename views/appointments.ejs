@@ -1,0 +1,63 @@
+<%- include('partials/header') %>
+
+<div class="container mt-4">
+    <h1>My Appointments</h1>
+
+    <% if (typeof success !== 'undefined' && success) { %>
+        <div class="alert alert-success"><%= success %></div>
+    <% } %>
+    <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert alert-danger"><%= error %></div>
+    <% } %>
+
+    <div class="table-responsive mt-4">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <% if (typeof isAdmin !== 'undefined' && isAdmin) { %>
+                        <th>User</th>
+                    <% } %>
+                    <th>Doctor</th>
+                    <th>Date & Time</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% appointments.forEach(appointment => { %>
+                    <tr>
+                        <% if (typeof isAdmin !== 'undefined' && isAdmin) { %>
+                            <td><%= appointment.user_name || 'N/A' %></td>
+                        <% } %>
+                        <td><%= appointment.doctor_name %></td>
+                        <td><%= new Date(appointment.appointment_date).toLocaleString() %></td>
+                        <td>
+                            <span class="badge bg-<%= 
+                                appointment.status === 'Confirmed' ? 'success' : 
+                                appointment.status === 'Cancelled' ? 'danger' : 'warning' 
+                            %>">
+                                <%= appointment.status %>
+                            </span>
+                        </td>
+                        <td>
+                            <% if (typeof isAdmin !== 'undefined' && isAdmin) { %>
+                                <form method="POST" action="/appointments/<%= appointment.id %>/status" class="d-inline">
+                                    <select name="status" class="form-select form-select-sm d-inline w-auto" onchange="this.form.submit()">
+                                        <option value="Pending" <%= appointment.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+                                        <option value="Confirmed" <%= appointment.status === 'Confirmed' ? 'selected' : '' %>>Confirmed</option>
+                                        <option value="Cancelled" <%= appointment.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+                                    </select>
+                                </form>
+                            <% } %>
+                            <form method="POST" action="/appointments/<%= appointment.id %>/delete" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-danger mb-1">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

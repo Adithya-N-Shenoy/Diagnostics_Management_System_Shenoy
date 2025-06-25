@@ -1,0 +1,114 @@
+<%- include('partials/header') %>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3>Book Test: <%= test.name %></h3>
+                </div>
+                <div class="card-body">
+                    <% if (typeof error !== 'undefined') { %>
+                        <div class="alert alert-danger"><%= error %></div>
+                    <% } %>
+                    
+                    <form id="bookingForm" method="POST" action="/submit-booking">
+                        <input type="hidden" name="test_id" value="<%= test.id %>">
+                        <input type="hidden" name="test_name" value="<%= test.name %>">
+                        
+                        <div class="mb-3">
+                            <label for="patientName" class="form-label">Patient Name*</label>
+                            <input type="text" class="form-control" id="patientName" name="patient_name" required>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="age" class="form-label">Age*</label>
+                                <input type="number" class="form-control" id="age" name="age" min="1" max="120" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="gender" class="form-label">Gender*</label>
+                                <select class="form-select" id="gender" name="gender" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Collection Address*</label>
+                            <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone Number*</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" pattern="[0-9]{10}" required>
+                            <small class="text-muted">10 digit number</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email*</label>
+                            <input type="email" class="form-control" id="email" name="email" value="<%= typeof email !== 'undefined' ? email : '' %>" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="bookingDate" class="form-label">Preferred Date & Time*</label>
+                            <input type="datetime-local" class="form-control" id="bookingDate" name="booking_date" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="additionalNotes" class="form-label">Additional Notes</label>
+                            <textarea class="form-control" id="additionalNotes" name="additional_notes" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">Confirm Booking</button>
+                            <a href="/services" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set default booking date (tomorrow at 9 AM)
+    const now = new Date();
+    now.setDate(now.getDate() + 1);
+    now.setHours(9, 0, 0, 0);
+    document.getElementById('bookingDate').valueAsNumber = now.getTime() - (now.getTimezoneOffset() * 60000);
+    
+    // Form validation
+    const form = document.getElementById('bookingForm');
+    form.addEventListener('submit', function(e) {
+        let isValid = true;
+        
+        // Validate required fields
+        document.querySelectorAll('[required]').forEach(field => {
+            if (!field.value.trim()) {
+                field.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                field.classList.remove('is-invalid');
+            }
+        });
+        
+        // Validate phone number format
+        const phone = document.getElementById('phone');
+        if (phone.value && !/^\d{10}$/.test(phone.value)) {
+            phone.classList.add('is-invalid');
+            isValid = false;
+        }
+        
+        if (!isValid) {
+            e.preventDefault();
+            alert('Please fill all required fields correctly');
+        }
+    });
+});
+</script>
+
+<%- include('partials/footer') %>

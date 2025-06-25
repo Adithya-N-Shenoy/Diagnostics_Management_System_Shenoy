@@ -1,0 +1,27 @@
+<%- include('partials/header') %>
+
+<div class="container mt-5">
+    <h1 class="hero-title text-center mb-4">Our Doctors</h1>
+    <p class="hero-subtitle text-center">Meet our team of dedicated professionals</p>
+    
+    <div class="row mt-4">
+        <% doctors.forEach(doctor => { %>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <img src="<%= doctor.photo %>" class="card-img-top" alt="<%= doctor.name %>" style="height: 200px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title text-primary"><%= doctor.name %></h5>
+                    <p class="card-text"><strong>Specialization:</strong> <%= doctor.specialization %></p>
+                    <p class="card-text"><strong>Education:</strong> <%= doctor.education %></p>
+                    <p class="card-text"><%= doctor.description %></p>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="/appointments/book/<%= doctor.id %>" class="btn btn-primary">Book Appointment</a>
+                </div>
+            </div>
+        </div>
+        <% }); %>
+    </div>
+</div>
+
+<%- include('partials/footer') %>
